@@ -4,18 +4,10 @@
 #include <iostream>
 #include <vector>
 
-#include "onnxruntime_c_api.h"
 #include "onnxruntime_cxx_api.h"
 
 int main() {
     const char* model_path = "../xgboost_train/xgbc_iris.onnx";
-    // TODO: dynamic loading library
-    // Load the dynamic library libonnxruntime.so
-    // void* handle = dlopen("libonnxruntime.so.1.20.0", RTLD_LAZY);
-    // if (!handle) {
-    //     std::cerr << "Failed to load libonnxruntime.so: " << dlerror() << std::endl;
-    //     return 1;
-    // }
     Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNX_Cpp_API");
     Ort::SessionOptions session_options;
     Ort::Session session(env, model_path, session_options);
@@ -99,6 +91,10 @@ int main() {
         }
         std::cout << " | Output: " << output_data[i] << std::endl;
     }
+
+    session.release();
+    session_options.release();
+    env.release();
 
     return 0;
 }
