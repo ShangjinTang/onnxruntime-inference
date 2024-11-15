@@ -3,7 +3,8 @@ project(onnxruntime_inference_cpp_dynamic)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(${PROJECT_NAME} main.cc)
+add_executable(${PROJECT_NAME} main.cc
+)
 
 # copy runtime so
 file(GLOB ONNXRUNTIME_LIBS
