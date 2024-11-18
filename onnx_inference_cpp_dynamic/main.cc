@@ -10,9 +10,9 @@
 
 using GetApiBaseFunc = OrtApiBase* (*)();
 
-class OnnxClassifier {
+class OnnxInferenceEngine {
 public:
-    explicit OnnxClassifier(const std::string& model_path)
+    explicit OnnxInferenceEngine(const std::string& model_path)
             : env_(ORT_LOGGING_LEVEL_WARNING, "ONNX_Cpp_API"),
               session_(env_, model_path.c_str(), Ort::SessionOptions{}) {
         session_options_.DisableCpuMemArena();
@@ -79,6 +79,8 @@ private:
 
 
 int main() {
+    sleep(3);
+
     const char* model_path = "./xgbc_iris.onnx";
 
     // NOTE: It's better to use absolute link in dlopen. Relative link below is only for demostration.
@@ -99,8 +101,8 @@ int main() {
     Ort::InitApi(api);
 
     {
-        // Create an instance of OnnxClassifier
-        OnnxClassifier classifier(model_path);
+        // Create an instance of OnnxInferenceEngine
+        OnnxInferenceEngine classifier(model_path);
 
         // Define test samples (input data)
         const std::vector<std::vector<float>> input_data_2d = {
@@ -144,11 +146,15 @@ int main() {
         classifier.printResults();
     }
 
+    sleep(3);
+
     const int result = dlclose(ort_library);
     if (result != 0) {
         std::cerr << "Failed to call dlclose()" << '\n';
         return 1;
     }
+
+    sleep(3);
 
     return 0;
 }
