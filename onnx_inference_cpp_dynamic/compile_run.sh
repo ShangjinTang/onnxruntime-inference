@@ -19,4 +19,5 @@ fi
 
 rm -rf build &> /dev/null
 cmake -S . -B build/Debug -DCMAKE_BUILD_TYPE=Debug && cp -f build/Debug/compile_commands.json . &> /dev/null && cmake --build build/Debug --config Debug
+cmake --build build/Debug
 ./build/Debug/onnxruntime_inference_cpp_dynamic
