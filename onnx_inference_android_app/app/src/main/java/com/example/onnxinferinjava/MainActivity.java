@@ -2,7 +2,6 @@ package com.example.onnxinferinjava;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,13 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.InputStream;
-import java.util.Arrays;
-
-import ai.onnxruntime.OrtEnvironment;
-import ai.onnxruntime.OrtSession;
-
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,24 +55,20 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity.this, "Please check the inputs", Toast.LENGTH_LONG).show();
                 }
-
             }
         }));
 
     }
 
     private int predictIris(float[] inputData) {
-        InputStream modelInputStream = getResources().openRawResource(R.raw.xgbc_iris);
-        ModelRunner modelRunner = null;
-        try {
-            modelRunner = new ModelRunner(modelInputStream, inputData.length);
-//            float[] inputData = {5.7f, 3.8f, 1.7f, 0.3f};
-//            float[] inputData = {6.1f, 2.8f, 4.7f, 1.2f};
-//            float[] inputData = {7.7f, 2.6f, 6.9f, 2.3f};
-
-            return (int) modelRunner.runInference(inputData);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        XgbcOnnxModel onnxModel = new XgbcOnnxModel(MainActivity.this, "models/xgbc_iris.ort");
+        onnxModel.init();
+//        float[] inputData = {5.7f, 3.8f, 1.7f, 0.3f};
+//        float[] inputData = {6.1f, 2.8f, 4.7f, 1.2f};
+        float[]  inputData2 = {7.7f, 2.6f, 6.9f, 2.3f};
+        long label = onnxModel.runInferenceGetLabel(inputData2);
+        Log.d(TAG, "label: " + label);
+        onnxModel.deinit();
+        return (int) label;
     }
 }
